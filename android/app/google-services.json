@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "770932425495",
+    "firebase_url": "https://faa-f2574-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "faa-f2574",
+    "storage_bucket": "faa-f2574.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770932425495:android:f789f33bd1de3f6dcf6d52",
+        "android_client_info": {
+          "package_name": "com.lakshay.fassla_consumer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770932425495-gqthbob9ru2m8ds3c2d2q5avb3qtommf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lakshay.fassla_consumer",
+            "certificate_hash": "1c093f2e29c954783d44b80854badd5f97decac5"
+          }
+        },
+        {
+          "client_id": "770932425495-s998fdis0in073nflvu5t2thkq8j6f02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUVmAU7FSWOx3PDB7fXBtzbHXwpYQs1is"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "770932425495-s998fdis0in073nflvu5t2thkq8j6f02.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "770932425495-1epptsvq0b6fglrt76lkf6dfbvfp00t9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.lakshay.fasslaConsumer"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
