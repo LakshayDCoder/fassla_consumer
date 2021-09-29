@@ -1,48 +1,50 @@
-import 'package:fassla_consumer/size_config.dart';
+import 'package:fassla_consumer/screens/bottom_tabs/bottom_tabs.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'components/body.dart';
-
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
-  static const routeName = "/splash-screen";
+  static const routeName = "/splash-Screen";
+
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    checkLoggedIn().then((value) {
+      // if(value){
+      //   // Logged In
+      //   Navigator.popAndPushNamed(context, "");
+      // }else{
+      //   // Not Logged In
+      //   Navigator.popAndPushNamed(context, "");
+      // }
+      print("Splash Login Value: $value");
+
+      Navigator.popAndPushNamed(context, BottomTabsScreen.routeName);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Scaffold(
-      body: Body(
+      body: Container(
+        child: Image.asset("assets/images/splash_image.jpeg"),
       ),
     );
   }
-}
 
-/*Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage("https://picsum.photos/1080/1920?blur=10"),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FlutterLogo(size: 200),
-                Text(
-                  "Splash Screen",
-                  style: TextStyle(
-                    fontSize: getProportionateScreenWidth(32),
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),*/
+  Future<bool> checkLoggedIn() async {
+    await Future.delayed(Duration(seconds: 2));
+
+    if (FirebaseAuth.instance.currentUser != null) {
+      return true;
+    }
+    return false;
+  }
+}

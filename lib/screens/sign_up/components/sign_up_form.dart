@@ -1,13 +1,14 @@
 import 'package:fassla_consumer/components/CustomIcon.dart';
 import 'package:fassla_consumer/components/default_button.dart';
-import 'package:fassla_consumer/screens/home_screen/home_screen.dart';
+import 'package:fassla_consumer/screens/bottom_tabs/bottom_tabs.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class SignForm extends StatefulWidget {
-  const SignForm({Key? key}) : super(key: key);
+  final String phoneNum;
+  const SignForm({Key? key, required this.phoneNum}) : super(key: key);
 
   @override
   _SignFormState createState() => _SignFormState();
@@ -17,6 +18,18 @@ class _SignFormState extends State<SignForm> {
   final _formKey = GlobalKey<FormState>();
   late String email, mobileNumber, gender, name;
   bool maleBool = false, femaleBool = false;
+  bool _phoneEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    mobileNumber = widget.phoneNum;
+    if (widget.phoneNum.isEmpty) {
+      _phoneEnabled = true;
+    } else {
+      _phoneEnabled = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +52,7 @@ class _SignFormState extends State<SignForm> {
                   _formKey.currentState!.save();
                   print("Email: $email, Name: $name, MobileNum: $mobileNumber");
                   Navigator.pushNamedAndRemoveUntil(
-                      context, HomeScreen.routeName, (route) => false);
+                      context, BottomTabsScreen.routeName, (route) => false);
                 }
               }),
         ],
@@ -73,6 +86,8 @@ class _SignFormState extends State<SignForm> {
   buildMobileNumFormField() {
     return TextFormField(
       keyboardType: TextInputType.number,
+      initialValue: mobileNumber,
+      enabled: _phoneEnabled,
       decoration: InputDecoration(
         hintText: "Enter your Mobile Number",
         labelText: "Mobile Number",

@@ -1,6 +1,10 @@
 import 'package:fassla_consumer/components/CustomIcon.dart';
 import 'package:fassla_consumer/components/default_button.dart';
+import 'package:fassla_consumer/screens/otp/otp_screen.dart';
+import 'package:fassla_consumer/states/UserRepository.dart';
+import 'package:fassla_consumer/states/enums.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -15,23 +19,32 @@ class SignForm extends StatefulWidget {
 class _SignFormState extends State<SignForm> {
   final _formKey = GlobalKey<FormState>();
   late String mobNum;
-
+  Status _currentState = Status.Unauthenticated;
   @override
   Widget build(BuildContext context) {
+    _currentState = Provider.of<UserRepository>(context).status;
+    statusChecks("+91 1234567890");
     return Form(
       key: _formKey,
-      child: Column(
+      child: Stack(
         children: [
-          buildMobileNumFormField(),
-          SizedBox(height: getProportionateScreenHeight(30)),
-          DefaultButton(
-              text: "Continue",
-              press: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  print("Mobile Num: $mobNum");
-                }
-              }),
+          Column(
+            children: [
+              buildMobileNumFormField(),
+              SizedBox(height: getProportionateScreenHeight(30)),
+              DefaultButton(
+                  text: "Continue",
+                  press: () async {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      var phone = "+91 $mobNum";
+                      print("Mobile Num: $phone");
+                      signInFormLogic(phone, context, _currentState);
+                    }
+                  }),
+              Text("Current State: $_currentState"),
+            ],
+          ),
         ],
       ),
     );
@@ -40,6 +53,7 @@ class _SignFormState extends State<SignForm> {
   buildMobileNumFormField() {
     return TextFormField(
       keyboardType: TextInputType.number,
+      maxLength: 10,
       decoration: InputDecoration(
         hintText: "Enter your Mobile Number",
         labelText: "Mobile Number",
@@ -62,5 +76,68 @@ class _SignFormState extends State<SignForm> {
         return null;
       },
     );
+  }
+
+  statusChecks(String phone) {
+    var userRepoFunctions = Provider.of<UserRepository>(context, listen: false);
+    Provider.of<UserRepository>(context).addListener(() async {
+      print("Current State in sign in form: \n$_currentState");
+
+      if (_currentState == Status.Authenticated) {
+        print("User Automatically logged in(from sign_in_logic)");
+
+        // Check if user exists
+        bool userExist = await userRepoFunctions.doesUserExist(
+            uid: userRepoFunctions.user.uid);
+
+        userAuthThenCheckIfUserExists(
+          context: context,
+          phone: phone,
+          userExist: userExist,
+        );
+      } else if (_currentState == Status.OtpSent) {
+        // Go to otp screen to verify
+        closeLoadingDialog(context);
+        Navigator.pushReplacementNamed(
+          context,
+          OtpScreen.routeName,
+          arguments: {
+            "phone": phone,
+            "state": _currentState,
+          },
+        );
+      } else if (_currentState == Status.Unauthenticated) {
+        // Authentication failed (verificationFailed method called)
+        closeLoadingDialog(context);
+        showMySnackbar(
+          ctx: context,
+          text: kOtpSendError,
+          type: SnackbarTypes.Fail,
+          duration: Duration(seconds: 20),
+        );
+      } else {
+        closeLoadingDialog(context);
+        showMySnackbar(
+          ctx: context,
+          text: "Invalid request. Please try again later...",
+          type: SnackbarTypes.Normal,
+          duration: Duration(seconds: 20),
+        );
+      }
+    });
+  }
+
+  signInFormLogic(
+      String phone, BuildContext context, Status currentState) async {
+    var userRepoFunctions = Provider.of<UserRepository>(context, listen: false);
+
+    showLoadingDialog(context);
+
+    await userRepoFunctions.sendOTP(phone);
+
+    // Provider.of<UserRepository>(context).addListener(() async {
+    // var currentState = Provider.of<UserRepository>(context, listen: false).status;
+
+    // });
   }
 }

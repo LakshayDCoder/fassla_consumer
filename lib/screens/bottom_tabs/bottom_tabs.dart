@@ -1,28 +1,28 @@
 import 'package:fassla_consumer/constants.dart';
-import 'package:fassla_consumer/screens/cart/cart_screen.dart';
-import 'package:fassla_consumer/screens/home_screen/components/home_body.dart';
-import 'package:fassla_consumer/screens/home_screen/components/my_app_bar.dart';
-import 'package:fassla_consumer/screens/home_screen/components/my_drawer.dart';
+import 'package:fassla_consumer/screens/HomeScreen/HomeScreen.dart';
 import 'package:fassla_consumer/screens/profile/profile_screen.dart';
 import 'package:fassla_consumer/screens/search/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-  static const routeName = "/home-screen";
+import '../../components/my_app_bar.dart';
+import 'my_drawer.dart';
+
+class BottomTabsScreen extends StatefulWidget {
+  const BottomTabsScreen({Key? key}) : super(key: key);
+  static const routeName = "/bottom-tab-screen";
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _BottomTabsScreenState createState() => _BottomTabsScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _BottomTabsScreenState extends State<BottomTabsScreen> {
   int _selectedIndex = 0;
 
   List<Widget> screensList = [
-    HomeBody(),
+    HomeScreen(),
     SearchScreen(),
-    CartScreen(),
+    // CartScreen(),
     ProfileScreen(),
   ];
 
@@ -45,10 +45,10 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Icon(Icons.search),
           label: 'Search',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart),
-          label: 'Cart',
-        ),
+        // BottomNavigationBarItem(
+        //   icon: Icon(Icons.shopping_cart),
+        //   label: 'Cart',
+        // ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Profile',
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       drawer: MyDrawer(),
-      appBar: MyAppBar(),
+      appBar: MyAppBar(title: "Home Screen"),
       body: screensList.elementAt(_selectedIndex),
       bottomNavigationBar: myBottomNavBar,
     );
