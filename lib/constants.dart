@@ -86,8 +86,10 @@ showMySnackbar({
   required BuildContext ctx,
   required String text,
   SnackbarTypes type = SnackbarTypes.Normal,
-  Duration duration = const Duration(seconds: 5),
+  Duration duration = const Duration(seconds: 3),
 }) {
+  ScaffoldMessenger.of(ctx).removeCurrentSnackBar();
+
   SnackBar mySnack = SnackBar(
     duration: duration,
     content: Text(

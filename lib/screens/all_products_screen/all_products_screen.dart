@@ -31,8 +31,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _type = ModalRoute.of(context)!.settings.arguments as ProductType;
-    // _type = ProductType.Carbs;
+    // _type = ModalRoute.of(context)!.settings.arguments as ProductType;
+    _type = ProductType.Vegetables;
 
     getInitData();
     scrollController.addListener(() {

@@ -1,5 +1,5 @@
 import 'package:fassla_consumer/routes.dart';
-import 'package:fassla_consumer/screens/bottom_tabs/bottom_tabs.dart';
+import 'package:fassla_consumer/screens/all_products_screen/all_products_screen.dart';
 import 'package:fassla_consumer/states/CartRepository.dart';
 import 'package:fassla_consumer/states/UserRepository.dart';
 import 'package:fassla_consumer/states/save_to_users.dart';
@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
         theme: theme(),
         routes: routes,
         // initialRoute: SplashScreen.routeName,
-        initialRoute: BottomTabsScreen.routeName,
-        // initialRoute: AllProductsScreen.routeName,
+        // initialRoute: BottomTabsScreen.routeName,
+        initialRoute: AllProductsScreen.routeName,
         // home: DropDownTry(),
       ),
     );
