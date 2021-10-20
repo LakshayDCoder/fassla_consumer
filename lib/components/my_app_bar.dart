@@ -11,7 +11,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(title),
       actions: [
-        IconButton(onPressed: () {}, icon: Icon(Icons.favorite)),
+        // IconButton(onPressed: () {}, icon: Icon(Icons.favorite)),
         IconButton(
             onPressed: () {
               Navigator.pushNamed(context, CartScreen.routeName);

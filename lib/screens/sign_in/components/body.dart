@@ -1,4 +1,3 @@
-import 'package:fassla_consumer/components/no_account_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../../size_config.dart';
@@ -32,8 +31,8 @@ class Body extends StatelessWidget {
               ),
               SizedBox(height: SizeConfig.screenHeight! * 0.06),
               SignForm(),
-              SizedBox(height: SizeConfig.screenHeight! * 0.02),
-              NoAccountText(),
+              // SizedBox(height: SizeConfig.screenHeight! * 0.02),
+              // NoAccountText(),
             ],
           ),
         ),

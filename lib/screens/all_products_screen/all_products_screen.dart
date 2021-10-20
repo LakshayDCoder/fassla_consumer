@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fassla_consumer/components/my_app_bar.dart';
-import 'package:fassla_consumer/screens/all_products_screen/product_tile.dart';
-import 'package:fassla_consumer/size_config.dart';
+import 'package:fassla_consumer/components/product_tile.dart';
 import 'package:fassla_consumer/states/ProductsRepository.dart';
 import 'package:fassla_consumer/states/enums.dart';
 import 'package:flutter/material.dart';
+
+import '../../size_config.dart';
 
 class AllProductsScreen extends StatefulWidget {
   static const routeName = "/all-product-screen";
@@ -31,8 +32,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // _type = ModalRoute.of(context)!.settings.arguments as ProductType;
-    _type = ProductType.Vegetables;
+    _type = ModalRoute.of(context)!.settings.arguments as ProductType;
+    // _type = ProductType.Vegetables;
 
     getInitData();
     scrollController.addListener(() {
@@ -134,7 +135,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       }
                     }
 
-                    return ProductTile(d: productList[pos]);
+                    return ProductTile(
+                        d: productList[pos], type: ProductTileType.DetailPage);
                   },
                 ),
                 onRefresh: getInitData, // Refresh entire list

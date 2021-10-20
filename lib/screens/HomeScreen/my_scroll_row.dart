@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fassla_consumer/components/product_tile.dart';
+import 'package:fassla_consumer/screens/all_products_screen/all_products_screen.dart';
 import 'package:fassla_consumer/states/ProductsRepository.dart';
 import 'package:fassla_consumer/states/enums.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +34,9 @@ class MyScrollRow extends StatelessWidget {
           var myList = snapshot.data!.docs;
           // print("Num of data in list: ${myList.length}");
 
-          return myList.length <= 0 ? noItemFound() : createRow(myList);
+          return myList.length <= 0
+              ? noItemFound()
+              : createRow(myList, context);
         },
       ),
     );
@@ -61,7 +65,7 @@ class MyScrollRow extends StatelessWidget {
         ),
       );
 
-  Widget createRow(List myList) {
+  Widget createRow(List myList, BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,12 +83,16 @@ class MyScrollRow extends StatelessWidget {
                   margin: EdgeInsets.only(bottom: 20),
                   child: IconButton(
                     padding: EdgeInsets.zero,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, AllProductsScreen.routeName,
+                          arguments: type);
+                    },
                     icon: Icon(Icons.arrow_forward),
                   ),
                 );
               }
-              return myCard(myList[index]);
+              return ProductTile(
+                  d: myList[index], type: ProductTileType.HomePage);
             },
           ),
         ),

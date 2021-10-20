@@ -1,8 +1,8 @@
-import 'package:fassla_consumer/FirestoreTry.dart';
-import 'package:fassla_consumer/PhoneAuthTry.dart';
 import 'package:fassla_consumer/screens/all_products_screen/all_products_screen.dart';
 import 'package:fassla_consumer/screens/bottom_tabs/bottom_tabs.dart';
 import 'package:fassla_consumer/screens/cart/cart_screen.dart';
+import 'package:fassla_consumer/screens/drawer/about_bet.dart';
+import 'package:fassla_consumer/screens/my_profile/my_profile.dart';
 import 'package:fassla_consumer/screens/on_boarding_screen/on_boarding_screen.dart';
 import 'package:fassla_consumer/screens/otp/otp_screen.dart';
 import 'package:fassla_consumer/screens/sign_in/sign_in_screen.dart';
@@ -20,6 +20,6 @@ final Map<String, WidgetBuilder> routes = {
   SignInScreen.routeName: (ctx) => SignInScreen(),
   SignUpScreen.routeName: (ctx) => SignUpScreen(),
   OtpScreen.routeName: (ctx) => OtpScreen(),
-  PhoneAuthForm.routeName: (ctx) => PhoneAuthForm(),
-  FirestoreTry.routeName: (ctx) => FirestoreTry(),
+  MyProfileScreen.routeName: (ctx) => MyProfileScreen(),
+  AboutBET.routeName: (ctx) => AboutBET(),
 };

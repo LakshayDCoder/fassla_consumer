@@ -1,12 +1,11 @@
-import 'package:fassla_consumer/constants.dart';
 import 'package:fassla_consumer/screens/HomeScreen/HomeScreen.dart';
-import 'package:fassla_consumer/screens/profile/profile_screen.dart';
 import 'package:fassla_consumer/screens/search/search_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/my_app_bar.dart';
-import 'my_drawer.dart';
+import '../../constants.dart';
+import '../drawer/my_drawer.dart';
 
 class BottomTabsScreen extends StatefulWidget {
   const BottomTabsScreen({Key? key}) : super(key: key);
@@ -23,7 +22,8 @@ class _BottomTabsScreenState extends State<BottomTabsScreen> {
     HomeScreen(),
     SearchScreen(),
     // CartScreen(),
-    ProfileScreen(),
+    // ProfileScreen(),
+    MyDrawer(),
   ];
 
   void _onItemTapped(int index) {
@@ -34,6 +34,10 @@ class _BottomTabsScreenState extends State<BottomTabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // var myUid = SharedPrefsRepo().getMyString(sUid);
+
+    // print("Shared Prefs UID: $myUid");
+
     var myBottomNavBar = BottomNavigationBar(
       items: [
         BottomNavigationBarItem(
@@ -64,7 +68,7 @@ class _BottomTabsScreenState extends State<BottomTabsScreen> {
     );
 
     return Scaffold(
-      drawer: MyDrawer(),
+      // drawer: Drawer(child: MyDrawer()),
       appBar: MyAppBar(title: "Home Screen"),
       body: screensList.elementAt(_selectedIndex),
       bottomNavigationBar: myBottomNavBar,

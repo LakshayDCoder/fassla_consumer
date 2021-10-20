@@ -17,6 +17,7 @@ class OtpForm extends StatefulWidget {
 }
 
 class _OtpFormState extends State<OtpForm> {
+  late FocusNode pin1FocusNode;
   late FocusNode pin2FocusNode;
   late FocusNode pin3FocusNode;
   late FocusNode pin4FocusNode;
@@ -33,16 +34,20 @@ class _OtpFormState extends State<OtpForm> {
   @override
   void initState() {
     super.initState();
+    pin1FocusNode = FocusNode();
     pin2FocusNode = FocusNode();
     pin3FocusNode = FocusNode();
     pin4FocusNode = FocusNode();
     pin5FocusNode = FocusNode();
     pin6FocusNode = FocusNode();
+
+    pin1FocusNode.requestFocus();
   }
 
   @override
   void dispose() {
     super.dispose();
+    pin1FocusNode.dispose();
     pin2FocusNode.dispose();
     pin3FocusNode.dispose();
     pin4FocusNode.dispose();
@@ -56,9 +61,26 @@ class _OtpFormState extends State<OtpForm> {
     }
   }
 
+  Widget charBox(FocusNode focusNode, TextEditingController controller,
+      Function onChangedFunc) {
+    return SizedBox(
+      width: getProportionateScreenWidth(40),
+      child: TextFormField(
+        controller: controller,
+        focusNode: focusNode,
+        obscureText: true,
+        style: TextStyle(fontSize: 24),
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        decoration: otpInputDecoration,
+        onChanged: (v) => onChangedFunc(v),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var currentState = Provider.of<UserRepository>(context).status;
+    var currentState = context.read<UserRepository>().status;
     return Form(
       child: Column(
         children: [
@@ -66,101 +88,35 @@ class _OtpFormState extends State<OtpForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                width: getProportionateScreenWidth(40),
-                child: TextFormField(
-                  controller: _textEditingController1,
-                  autofocus: true,
-                  obscureText: true,
-                  style: TextStyle(fontSize: 24),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  decoration: otpInputDecoration,
-                  onChanged: (value) {
-                    nextField(value, pin2FocusNode);
-                  },
-                ),
+              charBox(
+                pin1FocusNode,
+                _textEditingController1,
+                (value) => nextField(value, pin2FocusNode),
               ),
-              SizedBox(
-                width: getProportionateScreenWidth(40),
-                child: TextFormField(
-                  controller: _textEditingController2,
-                  focusNode: pin2FocusNode,
-                  obscureText: true,
-                  style: TextStyle(fontSize: 24),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  decoration: otpInputDecoration,
-                  onChanged: (value) => nextField(value, pin3FocusNode),
-                ),
+              charBox(
+                pin2FocusNode,
+                _textEditingController2,
+                (value) => nextField(value, pin3FocusNode),
               ),
-              SizedBox(
-                width: getProportionateScreenWidth(40),
-                child: TextFormField(
-                  controller: _textEditingController3,
-                  focusNode: pin3FocusNode,
-                  obscureText: true,
-                  style: TextStyle(fontSize: 24),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  decoration: otpInputDecoration,
-                  onChanged: (value) => nextField(value, pin4FocusNode),
-                ),
+              charBox(
+                pin3FocusNode,
+                _textEditingController3,
+                (value) => nextField(value, pin4FocusNode),
               ),
-              SizedBox(
-                width: getProportionateScreenWidth(40),
-                child: TextFormField(
-                  controller: _textEditingController4,
-                  focusNode: pin4FocusNode,
-                  obscureText: true,
-                  style: TextStyle(fontSize: 24),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  decoration: otpInputDecoration,
-                  onChanged: (value) => nextField(value, pin5FocusNode),
-                ),
+              charBox(
+                pin4FocusNode,
+                _textEditingController4,
+                (value) => nextField(value, pin5FocusNode),
               ),
-              SizedBox(
-                width: getProportionateScreenWidth(40),
-                child: TextFormField(
-                  controller: _textEditingController5,
-                  focusNode: pin5FocusNode,
-                  obscureText: true,
-                  style: TextStyle(fontSize: 24),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  decoration: otpInputDecoration,
-                  onChanged: (value) => nextField(value, pin6FocusNode),
-                ),
+              charBox(
+                pin5FocusNode,
+                _textEditingController5,
+                (value) => nextField(value, pin6FocusNode),
               ),
-              SizedBox(
-                width: getProportionateScreenWidth(40),
-                child: TextFormField(
-                  controller: _textEditingController6,
-                  focusNode: pin6FocusNode,
-                  obscureText: true,
-                  style: TextStyle(fontSize: 24),
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  decoration: otpInputDecoration,
-                  onChanged: (value) {
-                    if (value.length == 1) {
-                      pin6FocusNode.unfocus();
-                      // Check if the code is correct or not
-                      var char1 = _textEditingController1.text;
-                      var char2 = _textEditingController2.text;
-                      var char3 = _textEditingController3.text;
-                      var char4 = _textEditingController4.text;
-                      var char5 = _textEditingController5.text;
-                      var char6 = _textEditingController6.text;
-
-                      var myOTP = char1 + char2 + char3 + char4 + char5 + char6;
-
-                      print("Otp entered: $myOTP");
-                      otpSubmitLogic(myOTP, context, currentState);
-                    }
-                  },
-                ),
+              charBox(
+                pin6FocusNode,
+                _textEditingController6,
+                (value) => otpSubmitLogic(context),
               ),
             ],
           ),
@@ -169,21 +125,33 @@ class _OtpFormState extends State<OtpForm> {
             text: "Continue",
             press: () {},
           ),
-          Text("Current State: $currentState"),
+          //TODO: Remove this line
+          // Text("Current State: $currentState"),
         ],
       ),
     );
   }
 
-  otpSubmitLogic(String otp, BuildContext context, Status currentState) async {
-    final userRepo = Provider.of<UserRepository>(context, listen: false);
-
+  otpSubmitLogic(BuildContext context) async {
+    final userRepo = context.read<UserRepository>();
     showLoadingDialog(context);
 
-    // userRepo.addListener(() async {
-    print("Current State in otp form: \n$currentState");
+    pin6FocusNode.unfocus();
+    var char1 = _textEditingController1.text;
+    var char2 = _textEditingController2.text;
+    var char3 = _textEditingController3.text;
+    var char4 = _textEditingController4.text;
+    var char5 = _textEditingController5.text;
+    var char6 = _textEditingController6.text;
 
-    if (currentState == Status.Authenticated) {
+    var myOTP = char1 + char2 + char3 + char4 + char5 + char6;
+
+    print("Otp entered: $myOTP");
+
+    // userRepo.addListener(() async {
+    print("Current State in otp form: ${userRepo.status}");
+
+    if (userRepo.status == Status.Authenticated) {
       print("User Automatically logged in(from otp_logic)");
 
       // Check if user exists
@@ -196,22 +164,37 @@ class _OtpFormState extends State<OtpForm> {
         phone: widget.phone,
         userExist: userExist,
       );
-    }
-    // else if (currentState == Status.OtpSent) {
-    //   // Go to otp screen to verify
-    //   closeLoadingDialog(context);
-    //   await userRepo.verifyOTP(otp);
-    // } else if (currentState == Status.Unauthenticated) {
-    //   // Authentication failed (verificationFailed method called)
-    //   closeLoadingDialog(context);
-    //   showMySnackbar(
-    //     ctx: context,
-    //     text: kOtpSendError,
-    //     type: SnackbarTypes.Fail,
-    //     duration: Duration(seconds: 20),
-    //   );
-    // }
-    else {
+    } else if (userRepo.status == Status.OtpSent) {
+      var res = await userRepo.verifyOTP(myOTP);
+
+      if (res) {
+        // Otp verified
+        bool userExist = await userRepo.doesUserExist(uid: userRepo.user.uid);
+        closeLoadingDialog(context);
+
+        userAuthThenCheckIfUserExists(
+          context: context,
+          phone: widget.phone,
+          userExist: userExist,
+        );
+      } else {
+        // Otp not verified
+        closeLoadingDialog(context);
+        showMySnackbar(
+          ctx: context,
+          text: "Wrong OTP",
+          type: SnackbarTypes.Normal,
+          duration: Duration(seconds: 20),
+        );
+
+        _textEditingController1.clear();
+        _textEditingController2.clear();
+        _textEditingController3.clear();
+        _textEditingController4.clear();
+        _textEditingController5.clear();
+        _textEditingController6.clear();
+      }
+    } else {
       closeLoadingDialog(context);
       showMySnackbar(
         ctx: context,

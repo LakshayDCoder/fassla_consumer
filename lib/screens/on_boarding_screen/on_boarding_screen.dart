@@ -1,6 +1,6 @@
-import 'package:fassla_consumer/size_config.dart';
 import 'package:flutter/material.dart';
 
+import '../../size_config.dart';
 import 'components/body.dart';
 
 class OnBoardingScreen extends StatelessWidget {
@@ -12,8 +12,7 @@ class OnBoardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-      body: Body(
-      ),
+      body: Body(),
     );
   }
 }

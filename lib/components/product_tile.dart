@@ -1,16 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fassla_consumer/constants.dart';
 import 'package:fassla_consumer/states/CartModel.dart';
 import 'package:fassla_consumer/states/CartRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 
-import '../../size_config.dart';
+import '../constants.dart';
+import '../size_config.dart';
+
+enum ProductTileType {
+  HomePage,
+  DetailPage,
+}
 
 class ProductTile extends StatefulWidget {
   final QueryDocumentSnapshot d;
+  final ProductTileType type;
 
-  const ProductTile({Key? key, required this.d}) : super(key: key);
+  const ProductTile({Key? key, required this.d, required this.type})
+      : super(key: key);
 
   @override
   _ProductTileState createState() => _ProductTileState();
@@ -36,34 +43,56 @@ class _ProductTileState extends State<ProductTile> {
       _weightList.add("No Weights Found");
     }
     _selectedWeight = _weightList[0];
-
-    // print("$_weightList, Name: ${myDataMap["Product"]}, Uid: ${widget.d.id}");
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: myProductTitle(),
-      subtitle: myProductPrice(),
-      leading: myProductImage(),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // IconButton(
-          //   icon: Icon(Icons.favorite),
-          //   onPressed: () {},
-          // ),
-          IconButton(
-            icon: Icon(Icons.add_shopping_cart),
-            onPressed: () {
-              showWeightAndQuantitySelector();
-            },
-          ),
-        ],
-      ),
-      onTap: () => showWeightAndQuantitySelector(),
-    );
+    SizeConfig().init(context);
+    return widget.type == ProductTileType.DetailPage
+        ? detailPageCard()
+        : homePageCard();
   }
+
+  Widget homePageCard() => GestureDetector(
+        onTap: () => showWeightAndQuantitySelector(),
+        child: Container(
+          margin: EdgeInsets.only(right: 15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                backgroundImage: customNetworkImage(widget.d["image"]),
+                radius: 30,
+              ),
+              Text(widget.d["Product"]),
+            ],
+          ),
+        ),
+      );
+
+  Widget detailPageCard() => ListTile(
+        title: myProductTitle(),
+        subtitle: myProductPrice(),
+        leading: myProductImage(),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // IconButton(
+            //   icon: Icon(Icons.favorite),
+            //   onPressed: () {},
+            // ),
+            IconButton(
+              icon: Icon(Icons.add_shopping_cart),
+              onPressed: () {
+                showWeightAndQuantitySelector();
+              },
+            ),
+          ],
+        ),
+        onTap: () => showWeightAndQuantitySelector(),
+      );
 
   Widget myProductTitle() => Text(widget.d["Product"]);
 
@@ -205,7 +234,7 @@ class _ProductTileState extends State<ProductTile> {
                       ),
                     ),
                     subtitle: Text(
-                      "Other names: " + widget.d["meta"],
+                      "Other names: ${widget.d["meta"]} \nRs ${widget.d["price"]}/${widget.d["unit"]}",
                     ),
                   ),
                   ListTile(

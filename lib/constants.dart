@@ -41,6 +41,9 @@ const String kOtpSendError =
 
 // Firebase Collection Names
 const kProductCollection = "Products";
+const kOrderCollection = "Orders";
+const kUserCollection = "Users";
+const kUserCartCollection = "cart";
 
 final otpInputDecoration = InputDecoration(
   contentPadding:
@@ -146,12 +149,17 @@ userAuthThenCheckIfUserExists(
       text: "User Logged in Successfully",
       type: SnackbarTypes.Success,
     );
-    Navigator.pushReplacementNamed(context, BottomTabsScreen.routeName);
+    Navigator.pushNamedAndRemoveUntil(
+        context, BottomTabsScreen.routeName, (Route<dynamic> route) => false);
   } else {
     // If not go to register
     closeLoadingDialog(context);
-    Navigator.pushReplacementNamed(context, SignUpScreen.routeName,
-        arguments: phone);
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      SignUpScreen.routeName,
+      (Route<dynamic> route) => false,
+      arguments: phone,
+    );
   }
 }
 

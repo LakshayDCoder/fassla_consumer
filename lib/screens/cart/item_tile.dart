@@ -41,6 +41,7 @@ class _ItemTileState extends State<ItemTile> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return tile2();
   }
 
@@ -87,9 +88,22 @@ class _ItemTileState extends State<ItemTile> {
       );
 
   Widget myProductTotalPrice() {
-    return Text(
-      "₹\n${widget.item.finalPrice}",
-      style: TextStyle(),
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 0, 20, 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "₹\n${widget.item.finalPrice}",
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -22,8 +22,8 @@ class _SignFormState extends State<SignForm> {
   Status _currentState = Status.Unauthenticated;
   @override
   Widget build(BuildContext context) {
-    _currentState = Provider.of<UserRepository>(context).status;
-    statusChecks("+91 1234567890");
+    _currentState = context.read<UserRepository>().status;
+    // statusChecks("+91 1234567890");
     return Form(
       key: _formKey,
       child: Stack(
@@ -42,7 +42,8 @@ class _SignFormState extends State<SignForm> {
                       signInFormLogic(phone, context, _currentState);
                     }
                   }),
-              Text("Current State: $_currentState"),
+              //TODO: Remove this line
+              // Text("Current State: $_currentState"),
             ],
           ),
         ],
@@ -78,66 +79,27 @@ class _SignFormState extends State<SignForm> {
     );
   }
 
-  statusChecks(String phone) {
-    var userRepoFunctions = Provider.of<UserRepository>(context, listen: false);
-    Provider.of<UserRepository>(context).addListener(() async {
-      print("Current State in sign in form: \n$_currentState");
-
-      if (_currentState == Status.Authenticated) {
-        print("User Automatically logged in(from sign_in_logic)");
-
-        // Check if user exists
-        bool userExist = await userRepoFunctions.doesUserExist(
-            uid: userRepoFunctions.user.uid);
-
-        userAuthThenCheckIfUserExists(
-          context: context,
-          phone: phone,
-          userExist: userExist,
-        );
-      } else if (_currentState == Status.OtpSent) {
-        // Go to otp screen to verify
-        closeLoadingDialog(context);
-        Navigator.pushReplacementNamed(
-          context,
-          OtpScreen.routeName,
-          arguments: {
-            "phone": phone,
-            "state": _currentState,
-          },
-        );
-      } else if (_currentState == Status.Unauthenticated) {
-        // Authentication failed (verificationFailed method called)
-        closeLoadingDialog(context);
-        showMySnackbar(
-          ctx: context,
-          text: kOtpSendError,
-          type: SnackbarTypes.Fail,
-          duration: Duration(seconds: 20),
-        );
-      } else {
-        closeLoadingDialog(context);
-        showMySnackbar(
-          ctx: context,
-          text: "Invalid request. Please try again later...",
-          type: SnackbarTypes.Normal,
-          duration: Duration(seconds: 20),
-        );
-      }
-    });
-  }
-
   signInFormLogic(
       String phone, BuildContext context, Status currentState) async {
-    var userRepoFunctions = Provider.of<UserRepository>(context, listen: false);
+    var userRepo = context.read<UserRepository>();
 
     showLoadingDialog(context);
 
-    await userRepoFunctions.sendOTP(phone);
+    var res = await userRepo.sendOTP(phone);
 
-    // Provider.of<UserRepository>(context).addListener(() async {
-    // var currentState = Provider.of<UserRepository>(context, listen: false).status;
+    closeLoadingDialog(context);
 
-    // });
+    if (res) {
+      Navigator.popAndPushNamed(context, OtpScreen.routeName,
+          arguments: {"phone": phone});
+    } else {
+      print("Error running send otp function");
+      showMySnackbar(
+        ctx: context,
+        text: kOtpSendError,
+        type: SnackbarTypes.Fail,
+        duration: Duration(seconds: 20),
+      );
+    }
   }
 }

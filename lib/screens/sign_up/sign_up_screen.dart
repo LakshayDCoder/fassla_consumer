@@ -1,4 +1,3 @@
-import 'package:fassla_consumer/components/have_account_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../size_config.dart';
@@ -41,8 +40,8 @@ class SignUpScreen extends StatelessWidget {
                 ),
                 SizedBox(height: SizeConfig.screenHeight! * 0.08),
                 SignForm(phoneNum: phoneNum == null ? "" : phoneNum.toString()),
-                SizedBox(height: SizeConfig.screenHeight! * 0.02),
-                HaveAccountText(),
+                // SizedBox(height: SizeConfig.screenHeight! * 0.02),
+                // HaveAccountText(),
               ],
             ),
           ),
