@@ -47,6 +47,10 @@ class ProductsRepository {
     }
   }
 
+  Future<DocumentSnapshot> getProductDetails(String productUid) async {
+    return await _prodCollectionRef.doc(productUid).get();
+  }
+
   // List<ProductModal> parseQuerySnapshotList(
   //     List<QueryDocumentSnapshot> myList, ProductType type) {
   //   List<ProductModal> myProductsList = [];

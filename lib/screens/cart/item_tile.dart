@@ -24,7 +24,7 @@ class _ItemTileState extends State<ItemTile> {
   void initState() {
     super.initState();
 
-    var myDataMap = widget.item.doc.data() as Map<String, dynamic>;
+    var myDataMap = widget.item.productDoc.data() as Map<String, dynamic>;
     var unitSet = myDataMap["unitset"];
 
     if (unitSet != null) {
@@ -73,15 +73,15 @@ class _ItemTileState extends State<ItemTile> {
     );
   }
 
-  Widget myProductTitle() => Text(widget.item.doc["Product"]);
+  Widget myProductTitle() => Text(widget.item.productDoc["Product"]);
 
   Widget myProductPricePerUnit() => Text(
-        "₹ ${widget.item.doc["price"]} / ${widget.item.doc["unit"]}",
+        "₹ ${widget.item.productDoc["price"]} / ${widget.item.productDoc["unit"]}",
         textAlign: TextAlign.start,
       );
 
   Widget myProductImage() => Image.network(
-        widget.item.doc["image"],
+        widget.item.productDoc["image"],
         width: getProportionateScreenWidth(80),
         height: getProportionateScreenHeight(90),
         fit: BoxFit.contain,
@@ -145,7 +145,7 @@ class _ItemTileState extends State<ItemTile> {
 
   updateCartList() {
     final myItem = CartModel(
-      doc: widget.item.doc,
+      productDoc: widget.item.productDoc,
       quantity: _quantity,
       weight: _selectedWeight,
       finalPrice: widget.item.finalPrice,

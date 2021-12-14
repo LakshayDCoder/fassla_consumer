@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fassla_consumer/states/ProductsRepository.dart';
+import 'package:fassla_consumer/states/UserRepository.dart';
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
 import 'CartModel.dart';
 
 class CartRepository extends ChangeNotifier {
@@ -8,25 +12,84 @@ class CartRepository extends ChangeNotifier {
   List<CartModel> get items => _items;
   int get cartTotal => calculateCartTotal();
 
-  void addItem(CartModel myItem) {
-    myItem.finalPrice = calculateItemFinalCost(myItem);
-    _items.add(myItem);
+  var _cartCollection = FirebaseFirestore.instance
+      .collection(kUserCollection)
+      .doc(UserRepository.instance().currentUID)
+      .collection(kUserCartCollection);
+
+  CartRepository() {
+    print("Cart Repo Init");
+    getItems();
+  }
+
+  Future getItems() async {
+    var query = await _cartCollection.get();
+
+    for (var doc in query.docs) {
+      DocumentSnapshot productDoc =
+          await ProductsRepository().getProductDetails(doc.id);
+      var cartItem = CartModel(
+          productDoc: productDoc,
+          quantity: doc.get("quantity"),
+          weight: doc.get("selected_weight"),
+          finalPrice: doc.get("product_price"));
+      _items.add(cartItem);
+    }
+    print("Got cart successfully");
+    notifyListeners();
+  }
+
+  void addItem(CartModel myItem) async {
+    var _isPresent = _items
+        .where((element) => element.productDoc.id == myItem.productDoc.id);
+
+    if (_isPresent.isEmpty) {
+      // Same product does not exist
+      myItem.finalPrice = calculateItemFinalCost(myItem);
+      _items.add(myItem);
+      await _cartCollection.doc(myItem.productDoc.id).set(myItem.toJson());
+    } else {
+      // Same product does exist
+      updateCartItem(myItem);
+    }
+
     print(
-        "Added Item: ${myItem.doc["Product"]}, List Length: ${_items.length}");
+        "Added Item: ${myItem.productDoc["Product"]}, List Length: ${_items.length}");
 
     notifyListeners();
   }
 
-  updateCartItem(CartModel currentItem) {
-    currentItem.finalPrice = calculateItemFinalCost(currentItem);
-    var index =
-        _items.indexWhere((element) => element.doc.id == currentItem.doc.id);
-    _items[index] = currentItem;
+  updateCartItem(CartModel currentItem) async {
+    var index = _items.indexWhere(
+        (element) => element.productDoc.id == currentItem.productDoc.id);
+
+    // If quantity == 0 then delete item
+    if (currentItem.quantity == 0) {
+      _items.removeAt(index);
+
+      _items.removeWhere(
+          (item) => item.productDoc.id == currentItem.productDoc.id);
+
+      await _cartCollection.doc(currentItem.productDoc.id).delete();
+    } else {
+      currentItem.finalPrice = calculateItemFinalCost(currentItem);
+      _items[index] = currentItem;
+      await _cartCollection
+          .doc(currentItem.productDoc.id)
+          .set(currentItem.toJson());
+    }
+
     notifyListeners();
   }
 
-  void removeAllItems() {
+  void removeAllItems() async {
     _items.clear();
+
+    var snapshots = await _cartCollection.get();
+    for (var doc in snapshots.docs) {
+      await doc.reference.delete();
+    }
+
     notifyListeners();
   }
 
@@ -41,7 +104,7 @@ class CartRepository extends ChangeNotifier {
   }
 
   int calculateItemFinalCost(CartModel myItem) {
-    var item = myItem.doc;
+    var item = myItem.productDoc;
 
     var priceUnit = item["unit"].toString().trim();
     double price = double.parse(item["price"]);

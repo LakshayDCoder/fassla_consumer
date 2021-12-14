@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fassla_consumer/states/CartModel.dart';
 import 'package:fassla_consumer/states/CartRepository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 
@@ -273,16 +274,22 @@ class _ProductTileState extends State<ProductTile> {
             _quantity++;
           }
 
-          var cart = context.read<CartRepository>();
-
           final myItem = CartModel(
-              doc: widget.d,
+              productDoc: widget.d,
               quantity: _quantity,
               weight: _selectedWeight,
               finalPrice: 0);
 
-          cart.addItem(myItem);
-          showMySnackbar(ctx: context, text: "Added to Cart");
+          if (FirebaseAuth.instance.currentUser == null) {
+            showMySnackbar(
+                ctx: context,
+                text: "Please Log in first",
+                type: SnackbarTypes.Fail);
+          } else {
+            var cart = context.read<CartRepository>();
+            cart.addItem(myItem);
+            showMySnackbar(ctx: context, text: "Added to Cart");
+          }
         },
       );
 }

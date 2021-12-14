@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         theme: theme(),
         routes: routes,
         initialRoute: SplashScreen.routeName,
-        // initialRoute: BottomTabsScreen.routeName,
+        // initialRoute: AboutDev.routeName,
         // initialRoute: MyProfileScreen.routeName,
       ),
     );

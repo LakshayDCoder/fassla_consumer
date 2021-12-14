@@ -1,4 +1,6 @@
 import 'package:fassla_consumer/components/log_out_tile.dart';
+import 'package:fassla_consumer/screens/about/about_dev.dart';
+import 'package:fassla_consumer/screens/my_orders/my_orders.dart';
 import 'package:fassla_consumer/screens/my_profile/my_profile.dart';
 import 'package:fassla_consumer/screens/on_boarding_screen/on_boarding_screen.dart';
 import 'package:fassla_consumer/states/SharedPrefsRepo.dart';
@@ -7,8 +9,6 @@ import 'package:fassla_consumer/states/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'about_bet.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -51,8 +51,11 @@ class _MyDrawerState extends State<MyDrawer> {
 
   List<Widget> commonTiles(BuildContext context) => [
         createTile("About Fassla", Icons.info, () {}),
-        createTile("About BET", Icons.phone, () {
-          Navigator.pushNamed(context, AboutBET.routeName);
+        // createTile("About BET", Icons.phone, () {
+        //   Navigator.pushNamed(context, AboutBET.routeName);
+        // }),
+        createTile("About Dev", Icons.phone, () {
+          Navigator.pushNamed(context, AboutDev.routeName);
         }),
         // createTile("Contact Us", Icons.phone, () {}),
       ];
@@ -73,6 +76,7 @@ class _MyDrawerState extends State<MyDrawer> {
               }
 
               print("Is logged in drawer uid: ${prefs.getString(sUid)}");
+              print("sName: ${prefs.getString(sName)}");
 
               return isLoggedIn
                   ? DrawerHeader(
@@ -92,7 +96,9 @@ class _MyDrawerState extends State<MyDrawer> {
         createTile("My Profile", Icons.person, () {
           Navigator.pushNamed(context, MyProfileScreen.routeName);
         }),
-        createTile("My Orders", Icons.shopping_basket, () {}),
+        createTile("My Orders", Icons.shopping_basket, () {
+          Navigator.pushNamed(context, MyOrders.routeName);
+        }),
       ];
 
   List<Widget> loggedOutTiles(BuildContext context) => [

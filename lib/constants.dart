@@ -184,3 +184,8 @@ ImageProvider customNetworkImage(String imgUrl) {
     },
   ).image;
 }
+
+Map<int, String> myOrderStatusMap = {
+  0: "Pending",
+  1: "Completed",
+};

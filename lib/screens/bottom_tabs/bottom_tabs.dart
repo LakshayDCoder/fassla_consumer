@@ -33,6 +33,11 @@ class _BottomTabsScreenState extends State<BottomTabsScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // var myUid = SharedPrefsRepo().getMyString(sUid);
 

@@ -1,36 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fassla_consumer/states/CartRepository.dart';
+import 'package:fassla_consumer/states/CartModel.dart';
+import 'package:fassla_consumer/states/ProductsRepository.dart';
 import 'package:fassla_consumer/states/UserRepository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart';
 
-Future<bool> placeCartOrder(BuildContext context) async {
-  var cart = Provider.of<CartRepository>(context, listen: false);
-
-  // Go to checkout screen
-  //verify payment
-  // if payment successful
-
-  bool dataAdded = await addOrderToDB(context);
-  // print("Data Added ?? -> $dataAdded");
-  cart.removeAllItems();
-
-  if (dataAdded) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 Future<bool> checkIfAddressAdded(BuildContext context) async {
   var user = Provider.of<UserRepository>(context, listen: false);
 
-  var data = await user.getCurrentUserData();
-  var address = data.get("address");
+  DocumentSnapshot data = await user.getCurrentUserData();
 
-  if (address != null) {
+  // print("Address Check: " + data.data().toString());
+
+  Map<String, dynamic> dataMap = data.data() as Map<String, dynamic>;
+
+  if (dataMap.containsKey("address1")) {
+    var address = dataMap["address1"];
+
     if (address.toString().isNotEmpty) {
       return true;
     }
@@ -39,43 +27,73 @@ Future<bool> checkIfAddressAdded(BuildContext context) async {
   return false;
 }
 
-Future<bool> addOrderToDB(BuildContext context) async {
-  // print("Running add data to db");
-  var cart = Provider.of<CartRepository>(context, listen: false);
-  var user = Provider.of<UserRepository>(context, listen: false);
+Future<List<MyOrderModel>> getMyOrders() async {
+  List<MyOrderModel> myOrdersList = [];
+  try {
+    var query = await FirebaseFirestore.instance
+        .collection(kOrderCollection)
+        .where("user_id", isEqualTo: UserRepository.instance().currentUID)
+        .orderBy('timestamp', descending: true)
+        .get();
 
-  FirebaseFirestore db = FirebaseFirestore.instance;
+    // print("Number of Orders: ${query.size}");
 
-  List productList = [];
-
-  for (var i in cart.items) {
-    var myMap = {
-      "product_id": i.doc.id,
-      "sel_weight": i.weight,
-      "quantity": i.quantity,
-      "product_price": i.finalPrice,
-    };
-    productList.add(myMap);
+    // Parsing multiple orders with multiple products
+    for (var singleOrder in query.docs) {
+      var status = singleOrder.get("status");
+      var total_price = singleOrder.get("total_price");
+      var timestamp = singleOrder.get("timestamp");
+      var orderId = singleOrder.id;
+      var products = singleOrder.get("products") as List<dynamic>;
+      List<CartModel> myProductsList = [];
+      for (var prod in products) {
+        DocumentSnapshot prodDoc =
+            await ProductsRepository().getProductDetails(prod["product_id"]);
+        CartModel item = CartModel(
+            productDoc: prodDoc,
+            quantity: prod["quantity"],
+            weight: prod["sel_weight"],
+            finalPrice: prod["product_price"]);
+        myProductsList.add(item);
+      }
+      var orderItem = MyOrderModel(
+        cart_price: total_price,
+        timestamp: timestamp,
+        cartModelList: myProductsList,
+        status: status,
+        orderId: orderId,
+      );
+      myOrdersList.add(orderItem);
+    }
+  } catch (e) {
+    print("Error while getting my orders from db: $e");
   }
 
-  Map<String, dynamic> myData = {
-    "products": productList,
-    "Status": "Pending",
-    "total_price": cart.cartTotal,
-    "user_id": user.currentUID,
-  };
+  return myOrdersList;
+}
 
-  bool retVal = false;
+class MyOrderModel {
+  List<CartModel> cartModelList;
+  Timestamp timestamp;
+  int cart_price;
+  int status;
+  String orderId;
 
-  await db
-      .collection(kOrderCollection)
-      .doc()
-      .set(myData)
-      .then((value) => retVal = true)
-      .catchError((err) {
-    print("Error while adding data to user order to db(from OrderRepo): $err");
-    retVal = false;
+  MyOrderModel({
+    required this.cart_price,
+    required this.timestamp,
+    required this.cartModelList,
+    required this.status,
+    required this.orderId,
   });
 
-  return retVal;
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     "products": productList,
+  //     "status": 0,
+  //     "total_price": cart_price,
+  //     "user_id": user.currentUID,
+  //     "timestamp": FieldValue.serverTimestamp(),
+  //   };
+  // }
 }

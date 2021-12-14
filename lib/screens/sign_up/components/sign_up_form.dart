@@ -193,7 +193,11 @@ class _SignFormState extends State<SignForm> {
       email: email,
       phone: mobileNumber,
       docId: docId,
-      address: "",
+      address1: "",
+      pin: '',
+      state: '',
+      city: '',
+      address2: '',
     );
 
     if (res) {

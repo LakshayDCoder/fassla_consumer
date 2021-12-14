@@ -3,6 +3,7 @@ import 'package:fassla_consumer/states/SharedPrefsRepo.dart';
 import 'package:fassla_consumer/states/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart';
 
@@ -113,26 +114,32 @@ class UserRepository extends ChangeNotifier {
     required String name,
     required String email,
     required String phone,
-    // required String gender,
     required String docId,
-    required String address,
+    required String address1,
+    required String address2,
+    required String city,
+    required String state,
+    required String pin,
   }) async {
     try {
       await _fireStore.doc(docId).set({
         'name': name,
         "phone": phone,
         "email": email,
-        // "gender": gender,
-        "address": address,
+        "address1": address1,
+        "address2": address2,
+        "city": city,
+        "state": state,
+        "pin": pin,
       });
 
       print("User Added (from Save To users)");
 
-      var sharedPrefRepo = SharedPrefsRepo();
-      sharedPrefRepo.setMyString(sName, name);
-      sharedPrefRepo.setMyString(sEmail, email);
-      sharedPrefRepo.setMyString(sMobile, phone);
-      sharedPrefRepo.setMyString(sUid, docId);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(sName, name);
+      await prefs.setString(sEmail, email);
+      await prefs.setString(sMobile, phone);
+      await prefs.setString(sUid, docId);
 
       return true;
     } catch (e) {
@@ -154,17 +161,27 @@ class UserRepository extends ChangeNotifier {
     } else {
       print("User Found");
 
-      var sharedPrefRepo = SharedPrefsRepo();
-      sharedPrefRepo.setMyString(sName, docSnap["name"].toString());
-      sharedPrefRepo.setMyString(sEmail, docSnap["email"].toString());
-      sharedPrefRepo.setMyString(sMobile, docSnap["phone"].toString());
-      sharedPrefRepo.setMyString(sUid, docSnap.id);
+      print(
+          "Name: ${docSnap["name"]}, Email: ${docSnap["email"]}, Phone: ${docSnap["phone"]}");
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(sName, docSnap["name"].toString());
+      await prefs.setString(sEmail, docSnap["email"].toString());
+      await prefs.setString(sMobile, docSnap["phone"].toString());
+      await prefs.setString(sUid, docSnap.id);
+
+      // var sharedPrefRepo = SharedPrefsRepo();
+      // sharedPrefRepo.setMyString(sName, docSnap["name"].toString());
+      // sharedPrefRepo.setMyString(sEmail, docSnap["email"].toString());
+      // sharedPrefRepo.setMyString(sMobile, docSnap["phone"].toString());
+      // sharedPrefRepo.setMyString(sUid, docSnap.id);
 
       return true;
     }
   }
 
   Future<DocumentSnapshot> getCurrentUserData() async {
+    // print("Getting user data from user repo");
     var uid = await getCurrentUserId();
     return await _fireStore.doc(uid).get();
   }
