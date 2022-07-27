@@ -1,10 +1,10 @@
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 // redirecting to website
 void redirectToBETWebsite() async {
   final String blackeyetechURL = "http://www.blackeyetech.in";
-  if (await canLaunch(blackeyetechURL)) {
-    await launch(blackeyetechURL);
+  if (await canLaunchUrlString(blackeyetechURL)) {
+    await launchUrlString(blackeyetechURL);
   } else {
     throw 'Could not launch $blackeyetechURL';
   }
@@ -13,8 +13,8 @@ void redirectToBETWebsite() async {
 // redirecting to facebook
 void redirectToBEtFacebook() async {
   final String blackeyetechURL = "https://www.facebook.com/BlackEyeTech/";
-  if (await canLaunch(blackeyetechURL)) {
-    await launch(blackeyetechURL);
+  if (await canLaunchUrlString(blackeyetechURL)) {
+    await launchUrlString(blackeyetechURL);
   } else {
     throw 'Could not launch $blackeyetechURL';
   }
@@ -24,8 +24,8 @@ void redirectToBEtFacebook() async {
 void redirectToBETInstagram() async {
   final String blackeyetechURL =
       "https://www.instagram.com/blackeyetech/?hl=en";
-  if (await canLaunch(blackeyetechURL)) {
-    await launch(blackeyetechURL);
+  if (await canLaunchUrlString(blackeyetechURL)) {
+    await launchUrlString(blackeyetechURL);
   } else {
     throw 'Could not launch $blackeyetechURL';
   }
@@ -35,13 +35,13 @@ void redirectToBETInstagram() async {
 void redirectToBETLinkedIn() async {
   final String blackeyetechURL =
       "https://in.linkedin.com/company/black-eye-technologies";
-  if (await canLaunch(blackeyetechURL)) {
-    await launch(blackeyetechURL);
+  if (await canLaunchUrlString(blackeyetechURL)) {
+    await launchUrlString(blackeyetechURL);
   } else {
     throw 'Could not launch $blackeyetechURL';
   }
 }
 
 void contactUsBtn() {
-  launch('tel://8872554895');
+  launchUrlString('tel://8872554895');
 }

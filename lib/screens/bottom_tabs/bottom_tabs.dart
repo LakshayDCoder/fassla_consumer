@@ -1,6 +1,5 @@
 import 'package:fassla_consumer/screens/HomeScreen/HomeScreen.dart';
 import 'package:fassla_consumer/screens/search/search_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/my_app_bar.dart';

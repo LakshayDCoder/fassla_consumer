@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class AboutDev extends StatefulWidget {
   const AboutDev({Key? key}) : super(key: key);
@@ -61,8 +61,8 @@ class _AboutDevState extends State<AboutDev> {
 
   _sendingMails() async {
     var url = 'mailto:$_mailTo?subject=Fassla App - Enquiry';
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
     } else {
       throw 'Could not launch $url';
     }

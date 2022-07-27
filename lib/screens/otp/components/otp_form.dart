@@ -80,7 +80,7 @@ class _OtpFormState extends State<OtpForm> {
 
   @override
   Widget build(BuildContext context) {
-    var currentState = context.read<UserRepository>().status;
+    // var currentState = context.read<UserRepository>().status;
     return Form(
       child: Column(
         children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'constants.dart';
 
@@ -17,8 +18,8 @@ AppBarTheme appBarTheme() {
   return AppBarTheme(
     color: kPrimaryColor,
     elevation: 1,
-    brightness: Brightness.dark,
     iconTheme: IconThemeData(color: Colors.white),
+    systemOverlayStyle: SystemUiOverlayStyle.light,
   );
 }
 

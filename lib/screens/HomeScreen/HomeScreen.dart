@@ -1,6 +1,5 @@
 import 'package:fassla_consumer/screens/HomeScreen/my_scroll_row.dart';
 import 'package:fassla_consumer/screens/all_products_screen/all_products_screen.dart';
-import 'package:fassla_consumer/states/ProductsRepository.dart';
 import 'package:fassla_consumer/states/enums.dart';
 import 'package:flutter/material.dart';
 
@@ -12,12 +11,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late ProductsRepository _productsRepository;
+  // late ProductsRepository _productsRepository;
 
   @override
   void initState() {
     super.initState();
-    _productsRepository = ProductsRepository();
+    // _productsRepository = ProductsRepository();
   }
 
   @override
